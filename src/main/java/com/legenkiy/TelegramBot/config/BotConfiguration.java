@@ -1,6 +1,6 @@
 package com.legenkiy.TelegramBot.config;
 
-import com.legenkiy.TelegramBot.service.TelegramBotConnect;
+import com.legenkiy.TelegramBot.service.TelegramConnectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +14,9 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Configuration
 public class BotConfiguration {
 
-    private final TelegramBotConnect telegramBotController;
+    private final TelegramConnectService telegramBotController;
     @Autowired
-    public BotConfiguration(TelegramBotConnect telegramBotController) {
+    public BotConfiguration(TelegramConnectService telegramBotController) {
         this.telegramBotController = telegramBotController;
     }
     @EventListener(ContextRefreshedEvent.class)
@@ -25,7 +25,7 @@ public class BotConfiguration {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi((DefaultBotSession.class));
             telegramBotsApi.registerBot(telegramBotController);
         }catch (TelegramApiException e){
-            log.error("Не удалось создать бота ");
+            log.error("Проблема з ініцалізацією боту!");
         }
 
     }

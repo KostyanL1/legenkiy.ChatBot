@@ -15,4 +15,6 @@ public class BotProperties {
     private String apiKey;
     @Value("${api.url}")
     private String apiUrl;
+    @Value("${text.start}")
+    String startText;
 }
