@@ -11,4 +11,8 @@ public class BotProperties {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
+    @Value("${api.key}")
+    private String apiKey;
+    @Value("${api.url}")
+    private String apiUrl;
 }
