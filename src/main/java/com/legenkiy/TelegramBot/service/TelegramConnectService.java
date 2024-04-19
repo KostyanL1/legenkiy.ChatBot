@@ -4,20 +4,13 @@ package com.legenkiy.TelegramBot.service;
 import com.legenkiy.TelegramBot.config.properties.BotProperties;
 import com.legenkiy.TelegramBot.controller.MessageController;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import javax.swing.text.html.HTML;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -26,6 +19,7 @@ public class TelegramConnectService extends TelegramLongPollingBot {
     private final BotProperties prop;
     private final MessageController messageController;
     private final WeatherService weatherService;
+    private final RespondMessageService respondMessageService;
 
     @Override
     public String getBotUsername() {
@@ -41,18 +35,36 @@ public class TelegramConnectService extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         try {
+            String errorMessage = "Дані для цього міста застаріли, або введені некоректно!\n" +
+                    "введіть /wt та коректну назву міста.";
             if (update.hasCallbackQuery()) {
                 CallbackQuery callbackQuery = update.getCallbackQuery();
                 String callBackData = callbackQuery.getData();
+                long chatId = callbackQuery.getMessage().getChatId();
                 if (callBackData.equals("weather_button")) {
-                    var message = new SendMessage();
-                    message.setChatId(String.valueOf(callbackQuery.getMessage().getChatId()));
-                    message.setText("Введіть [  /wt НАЗВА МІСТА  ]:" );
-                    message.setParseMode(ParseMode.HTML);
-                    execute(message);
+                    execute(respondMessageService.print("Введіть /wt НАЗВА МІСТА", chatId));
                 }
-            }
-            else {
+                if (callBackData.equals("weather_button3days")) {
+                    execute(respondMessageService.print("Отримую погоду на 3 дні... \uD83D\uDD4A", chatId));
+                    for (int i = 0; i < 3; i++) {
+                        if (weatherService.getWeatherForDays(i).equals(errorMessage)){
+                            execute(respondMessageService.print(errorMessage, chatId));
+                            break;
+                        }
+                        execute(respondMessageService.print(weatherService.getWeatherForDays(i), chatId));
+                    }
+                }
+                if (callBackData.equals("weather_button5days")) {
+                    execute(respondMessageService.print("Отримую погоду на 5 днів... \uD83D\uDD4A", chatId));
+                    for (int i = 0; i < 5; i++) {
+                        if (weatherService.getWeatherForDays(i).equals(errorMessage)){
+                            execute(respondMessageService.print(errorMessage, chatId));
+                            break;
+                        }
+                        execute(respondMessageService.print(weatherService.getWeatherForDays(i), chatId));
+                    }
+                }
+            } else {
                 SendMessage sendMessage = messageController.messageReceiver(update);
                 execute(sendMessage);
             }
