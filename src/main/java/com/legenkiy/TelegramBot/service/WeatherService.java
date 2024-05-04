@@ -50,20 +50,17 @@ public class WeatherService {
                 String weatherDescription = forecastObject.getJSONArray("weather").getJSONObject(0).getString("description");
 
                 // Формування рядка з погодними даними та датою
-                String formattedWeather = String.format(
-                        """
-                                                       Погода в %s на %s
-                                \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557
-                                           \uD83C\uDF25Погода ️: %s\s
-                                    
-                                           \uD83C\uDF21Температура : %.1f°C\s
-                                           \uD83C\uDFACВідчувається як : %.1f°C\s
-                                    
-                                           \uD83D\uDCA8Вітер : %.1f m/s\s
-                                           \uD83D\uDD2EТиск : %.0f mmHg\s
-                                           \uD83D\uDCA7Вологість : %d%%\s
-                                \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D""",
-                        city, date, weatherDescription, temperature, feelsLike, windSpeed, pressure, humidity);
+                String formattedWeather = new StringBuilder()
+                        .append("Погода в ").append(city).append(" на ").append(date).append('\n')
+                        .append('╔').append("═".repeat(21)).append('╗').append('\n')
+                        .append("\t\t\t\uD83C\uDF25Погода ️: ").append(weatherDescription).append("\n\n")
+                        .append("\t\t\t\uD83C\uDF21Температура : ").append(String.format("%.1f°C", temperature)).append('\n')
+                        .append("\t\t\t\uD83C\uDFACВідчувається як : ").append(String.format("%.1f°C", feelsLike)).append("\n\n")
+                        .append("\t\t\t\uD83D\uDCA8Вітер : ").append(String.format("%.1f m/s", windSpeed)).append('\n')
+                        .append("\t\t\t\uD83D\uDD2EТиск : ").append(Math.round(pressure)).append(" mmHg").append('\n')
+                        .append("\t\t\t\uD83D\uDCA7Вологість : ").append(humidity).append('%').append('\n')
+                        .append('╚').append("═".repeat(21)).append('╝')
+                        .toString();
                 forecastList.add(formattedWeather);
             }
         } catch (Exception e) {
