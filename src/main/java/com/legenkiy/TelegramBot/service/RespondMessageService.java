@@ -1,5 +1,6 @@
 package com.legenkiy.TelegramBot.service;
 
+import com.legenkiy.TelegramBot.data.Actions;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -16,7 +17,7 @@ public class RespondMessageService {
         List<InlineKeyboardButton> rowInLine = new ArrayList<>();
         var weather_button = new InlineKeyboardButton();
         weather_button.setText("Отримати погоду\uD83C\uDF25");
-        weather_button.setCallbackData("weather_button");
+        weather_button.setCallbackData(Actions.WEATHER.name());
         rowInLine.add(weather_button);
         rowsInLine.add(rowInLine);
         inlineKeyboardMarkup.setKeyboard(rowsInLine);
@@ -34,9 +35,9 @@ public class RespondMessageService {
         var weatherButtonForThreeDays = new InlineKeyboardButton();
         var weatherButtonForFiveDays = new InlineKeyboardButton();
         weatherButtonForThreeDays.setText("на 3 дні\uD83C\uDF25");
-        weatherButtonForThreeDays.setCallbackData("weather_button3days");
+        weatherButtonForThreeDays.setCallbackData(Actions.WEATHER_DAYS_3.name());
         weatherButtonForFiveDays.setText("на 5 днів\uD83C\uDF25");
-        weatherButtonForFiveDays.setCallbackData("weather_button5days");
+        weatherButtonForFiveDays.setCallbackData(Actions.WEATHER_DAYS_3.name());
         rowInLine.add(weatherButtonForThreeDays);
         rowInLine.add(weatherButtonForFiveDays);
         rowsInLine.add(rowInLine);
